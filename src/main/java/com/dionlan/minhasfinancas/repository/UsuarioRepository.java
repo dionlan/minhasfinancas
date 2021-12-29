@@ -1,4 +1,4 @@
-package com.dionlan.minhasfinancas.model.repository;
+package com.dionlan.minhasfinancas.repository;
 
 import java.util.Optional;
 

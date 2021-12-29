@@ -1,0 +1,52 @@
+package com.dionlan.minhasfinancas.api.resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.dionlan.minhasfinancas.api.dto.UsuarioDTO;
+import com.dionlan.minhasfinancas.model.entity.Usuario;
+import com.dionlan.minhasfinancas.model.exception.ErroAutenticacao;
+import com.dionlan.minhasfinancas.model.exception.RegraNegocioException;
+import com.dionlan.minhasfinancas.model.service.UsuarioService;
+
+@RestController
+@RequestMapping("/api/usuarios")
+public class UsuarioResource {
+	
+	@Autowired
+	private UsuarioService service;
+	
+	@PostMapping("/autenticar")
+	public ResponseEntity<?> autenticar(@RequestBody UsuarioDTO usuarioDto){
+		
+		try {
+			Usuario usuarioAutenticado = service.autenticar(usuarioDto.getEmail(), usuarioDto.getSenha());
+			return ResponseEntity.ok().body(usuarioAutenticado);
+			
+		}catch(ErroAutenticacao e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+	}
+
+	@PostMapping("/salvar")
+	public ResponseEntity<?> salvar(@RequestBody UsuarioDTO usuarioDto) {
+		
+		Usuario usuarioEntity = Usuario.builder()
+				.email(usuarioDto.getEmail())
+				.nome(usuarioDto.getNome())
+				.senha(usuarioDto.getSenha())
+				.build();
+		try {
+			Usuario usuarioSalvo = service.salvarUsuario(usuarioEntity);
+			return ResponseEntity.status(HttpStatus.CREATED).body(usuarioSalvo);
+			
+		}catch(RegraNegocioException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+}

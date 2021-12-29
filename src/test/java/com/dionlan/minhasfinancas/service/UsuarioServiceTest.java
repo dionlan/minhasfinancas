@@ -17,8 +17,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.dionlan.minhasfinancas.model.entity.Usuario;
 import com.dionlan.minhasfinancas.model.exception.ErroAutenticacao;
 import com.dionlan.minhasfinancas.model.exception.RegraNegocioException;
-import com.dionlan.minhasfinancas.model.repository.UsuarioRepository;
 import com.dionlan.minhasfinancas.model.service.impl.UsuarioServiceImpl;
+import com.dionlan.minhasfinancas.repository.UsuarioRepository;
 
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("/application-test.properties")

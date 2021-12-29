@@ -1,12 +1,14 @@
 package com.dionlan.minhasfinancas.model.entity;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +27,8 @@ public class Usuario {
 	private String nome;
 	private String email;
 	private String senha;
-	@Column(name = "data_cadastro")
-	private LocalDateTime dataCadastro;
+	
+	@CreationTimestamp
+	@Column(name = "data_cadastro", nullable = false, columnDefinition = "datetime")
+	private OffsetDateTime dataCadastro;
 }

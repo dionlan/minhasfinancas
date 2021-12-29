@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import com.dionlan.minhasfinancas.model.entity.Usuario;
 import com.dionlan.minhasfinancas.model.exception.ErroAutenticacao;
 import com.dionlan.minhasfinancas.model.exception.RegraNegocioException;
-import com.dionlan.minhasfinancas.model.repository.UsuarioRepository;
 import com.dionlan.minhasfinancas.model.service.UsuarioService;
+import com.dionlan.minhasfinancas.repository.UsuarioRepository;
 /**
  * Implementação das regras de negócio.
  * 1. Cadastrar um usuário por e-mail, caso tente cadastrar com um email já cadastrado, é lançada a exceção RegraNegocioException. Só é possível cadastrar um usuário caso o seu email não esteja já cadastrado. 
