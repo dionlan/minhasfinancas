@@ -1,8 +1,11 @@
 package com.dionlan.minhasfinancas.model.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.dionlan.minhasfinancas.model.entity.Usuario;
+import com.dionlan.minhasfinancas.model.exception.ErroAutenticacao;
 import com.dionlan.minhasfinancas.model.exception.RegraNegocioException;
 import com.dionlan.minhasfinancas.model.repository.UsuarioRepository;
 import com.dionlan.minhasfinancas.model.service.UsuarioService;
@@ -24,12 +27,23 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	@Override
 	public Usuario autenticar(String email, String senha) {
-		return null;
+		Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+		
+		if(!usuario.isPresent()) {
+			throw new ErroAutenticacao("Usuário não encontrado para o e-mail informado.");
+		}
+		
+		if(!usuario.get().getSenha().equals(senha)) {
+			throw new ErroAutenticacao("Senha incorreta.");
+		}
+		
+		return usuario.get();
 	}
 
 	@Override
 	public Usuario salvarUsuario(Usuario usuario) {
-		return null;
+		validarEmail(usuario.getEmail());
+		return usuarioRepository.save(usuario);
 	}
 
 	@Override
