@@ -6,11 +6,11 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -18,21 +18,58 @@ import com.dionlan.minhasfinancas.model.entity.Usuario;
 import com.dionlan.minhasfinancas.model.exception.ErroAutenticacao;
 import com.dionlan.minhasfinancas.model.exception.RegraNegocioException;
 import com.dionlan.minhasfinancas.model.repository.UsuarioRepository;
-import com.dionlan.minhasfinancas.model.service.UsuarioService;
 import com.dionlan.minhasfinancas.model.service.impl.UsuarioServiceImpl;
 
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("/application-test.properties")
 public class UsuarioServiceTest {
 
-	private UsuarioService usuarioService;
+	@SpyBean
+	private UsuarioServiceImpl usuarioService;
 	
 	@MockBean
 	private UsuarioRepository usuarioRepository;
 	
-	@BeforeEach
-	public void setup() {
-		usuarioService = new UsuarioServiceImpl(usuarioRepository);
+	@Test
+	public void deveSalvarUmUsuario(){
+		//cenário
+		Mockito.doNothing().when(usuarioService).validarEmail(Mockito.anyString());
+		Usuario usuario = Usuario
+				.builder()
+				.id(1L)
+				.nome("nome")
+				.email("email@email.com")
+				.senha("senha").build();
+		
+		Mockito.when(usuarioRepository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
+		
+		//ação / execução
+		Usuario usuarioSalvo = usuarioService.salvarUsuario(usuario);
+		
+		//verificação
+		assertThat(usuarioSalvo.getId()).isEqualTo(1L);
+		assertThat(usuarioSalvo.getNome()).isEqualTo("nome");
+		assertThat(usuarioSalvo.getEmail()).isEqualTo("email@email.com");
+		assertThat(usuarioSalvo.getSenha()).isEqualTo("senha");
+	}
+	
+	/**
+	 * espera-se que lance a exception e nunca chame o método de salvar, pois o e-mail informado já está cadastrado
+	 */
+	@Test
+	public void naoDeveSalvarUmUsuarioComEmailJaCadastrado(){
+		//cenário
+		String email = "email@email.com";
+		Usuario usuario = Usuario.builder().email(email).build();
+		Mockito.doThrow(RegraNegocioException.class).when(usuarioService).validarEmail(email);
+		
+		//ação / execução
+		Assertions.assertThrows(RegraNegocioException.class, () -> {
+			usuarioService.salvarUsuario(usuario);
+		});
+		
+		//verificação
+		Mockito.verify(usuarioRepository, Mockito.never()).save(usuario);
 	}
 	
 	@Test
@@ -44,11 +81,11 @@ public class UsuarioServiceTest {
 		
 		Mockito.when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
 		
-		//ação
-		Usuario resultado = usuarioService.autenticar(email, senha);
+		//ação / execução
+		Usuario usuarioAutenticado = usuarioService.autenticar(email, senha);
 		
 		//verificação
-		assertThat(resultado).isNotNull();
+		assertThat(usuarioAutenticado).isNotNull();
 	}
 	/**
 	 * teste para cair na exceção ErroAutenticacao quando encontrar um usuario já cadastrado com o email informado
