@@ -15,4 +15,6 @@ public interface UsuarioService {
 	Optional<Usuario> obterPorId(Long id);
 	
 	Usuario buscarOuFalhar(Long id);
+	
+	void deletar(Long id);
 }

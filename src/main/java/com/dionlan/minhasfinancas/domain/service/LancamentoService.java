@@ -15,3 +15,4 @@ public interface LancamentoService {
 	void validarLancamento(Lancamento lancamento);
 	Lancamento obterPorId(Long id);
 }
+

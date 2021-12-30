@@ -20,7 +20,6 @@ import com.dionlan.minhasfinancas.domain.exception.EntidadeEmUsoException;
 import com.dionlan.minhasfinancas.domain.exception.LancamentoNaoEncontradoException;
 import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
 import com.dionlan.minhasfinancas.domain.repository.LancamentoRepository;
-import com.dionlan.minhasfinancas.domain.repository.UsuarioRepository;
 import com.dionlan.minhasfinancas.domain.service.LancamentoService;
 import com.dionlan.minhasfinancas.domain.service.UsuarioService;
 
@@ -58,7 +57,7 @@ public class LancamentoServiceImpl implements LancamentoService{
 	@Override
 	@Transactional
 	public Lancamento obterPorId(Long id){
-		return repository.findById(id).orElseThrow(() -> new RegraNegocioException(""));
+		return repository.findById(id).orElseThrow(() -> new LancamentoNaoEncontradoException(id));
 	}
 
 	@Override
