@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dionlan.minhasfinancas.api.dto.UsuarioDTO;
-import com.dionlan.minhasfinancas.model.entity.Usuario;
-import com.dionlan.minhasfinancas.model.exception.ErroAutenticacao;
-import com.dionlan.minhasfinancas.model.exception.RegraNegocioException;
-import com.dionlan.minhasfinancas.model.service.UsuarioService;
+import com.dionlan.minhasfinancas.domain.entity.Usuario;
+import com.dionlan.minhasfinancas.domain.entity.dto.UsuarioDTO;
+import com.dionlan.minhasfinancas.domain.exception.ErroAutenticacao;
+import com.dionlan.minhasfinancas.domain.service.UsuarioService;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -35,7 +34,7 @@ public class UsuarioResource {
 
 	@PostMapping("/salvar")
 	public ResponseEntity<?> salvar(@RequestBody UsuarioDTO usuarioDto) {
-		
+		/*
 		Usuario usuarioEntity = Usuario.builder()
 				.email(usuarioDto.getEmail())
 				.nome(usuarioDto.getNome())
@@ -47,6 +46,9 @@ public class UsuarioResource {
 			
 		}catch(RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
-		}
+		} */
+		return null;
 	}
+	
+	
 }

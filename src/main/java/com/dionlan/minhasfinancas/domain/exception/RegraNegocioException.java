@@ -1,4 +1,4 @@
-package com.dionlan.minhasfinancas.model.exception;
+package com.dionlan.minhasfinancas.domain.exception;
 
 public class RegraNegocioException extends RuntimeException{
 

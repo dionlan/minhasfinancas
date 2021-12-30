@@ -1,26 +1,28 @@
-package com.dionlan.minhasfinancas.model.entity;
+package com.dionlan.minhasfinancas.domain.entity;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity
 public class Usuario {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -31,4 +33,8 @@ public class Usuario {
 	@CreationTimestamp
 	@Column(name = "data_cadastro", nullable = false, columnDefinition = "datetime")
 	private OffsetDateTime dataCadastro;
+	
+	@JsonIgnore
+	@OneToMany (mappedBy = "usuario")
+	private List<Lancamento> lancamentos = new ArrayList<>();
 }

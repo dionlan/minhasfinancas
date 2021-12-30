@@ -15,8 +15,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.dionlan.minhasfinancas.model.entity.Usuario;
-import com.dionlan.minhasfinancas.repository.UsuarioRepository;
+import com.dionlan.minhasfinancas.domain.entity.Usuario;
+import com.dionlan.minhasfinancas.domain.repository.UsuarioRepository;
 
 /**
  * Testes de integração. Acessa recursos fora da aplicação, como o repositório do banco de dados. Diferente do teste unitário;
@@ -97,13 +97,14 @@ public class UsuarioServiceRepositoryTest {
 	}
 	
 	public static Usuario criarUsuario() {
-		return Usuario
+		/*return Usuario
 				.builder()
 				.nome("Dionlan Alves de Jesus")
 				.email("dionlan.alves@gmail.com")
 				.senha("dionlan")
 				.dataCadastro(OffsetDateTime.now())
-				.build();
+				.build(); */
+		return null;
 	}
 
 }

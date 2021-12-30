@@ -1,10 +1,10 @@
-package com.dionlan.minhasfinancas.repository;
+package com.dionlan.minhasfinancas.domain.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.dionlan.minhasfinancas.model.entity.Usuario;
+import com.dionlan.minhasfinancas.domain.entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 

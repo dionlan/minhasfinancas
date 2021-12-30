@@ -1,14 +1,16 @@
-package com.dionlan.minhasfinancas.model.service.impl;
+package com.dionlan.minhasfinancas.domain.service.impl;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.dionlan.minhasfinancas.model.entity.Usuario;
-import com.dionlan.minhasfinancas.model.exception.ErroAutenticacao;
-import com.dionlan.minhasfinancas.model.exception.RegraNegocioException;
-import com.dionlan.minhasfinancas.model.service.UsuarioService;
-import com.dionlan.minhasfinancas.repository.UsuarioRepository;
+import com.dionlan.minhasfinancas.domain.entity.Usuario;
+import com.dionlan.minhasfinancas.domain.exception.ErroAutenticacao;
+import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
+import com.dionlan.minhasfinancas.domain.exception.UsuarioNaoEncontradoException;
+import com.dionlan.minhasfinancas.domain.repository.UsuarioRepository;
+import com.dionlan.minhasfinancas.domain.service.UsuarioService;
 /**
  * Implementação das regras de negócio.
  * 1. Cadastrar um usuário por e-mail, caso tente cadastrar com um email já cadastrado, é lançada a exceção RegraNegocioException. Só é possível cadastrar um usuário caso o seu email não esteja já cadastrado. 
@@ -18,12 +20,8 @@ import com.dionlan.minhasfinancas.repository.UsuarioRepository;
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
+	@Autowired
 	private UsuarioRepository usuarioRepository; //classe UsuarioService injetando a dependencia (ID) para UsuarioRepository @Autowired 
-	
-	public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
-		super();
-		this.usuarioRepository = usuarioRepository;
-	}
 	
 	@Override
 	public Usuario autenticar(String email, String senha) {
@@ -54,7 +52,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 		if(existe) {
 			throw new RegraNegocioException("Já existe um usuário cadastrado com esse e-mail.");
 		}
-		
 	}
+	
+	@Override
+	public Optional<Usuario> obterPorId(Long id) {
+		return usuarioRepository.findById(id);
 
+	}
+	
+	@Override
+	public Usuario buscarOuFalhar(Long id) {
+		return usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException(id));
+	}
 }
