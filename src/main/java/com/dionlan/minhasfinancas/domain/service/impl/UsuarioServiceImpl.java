@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dionlan.minhasfinancas.domain.entity.Usuario;
 import com.dionlan.minhasfinancas.domain.exception.EntidadeEmUsoException;
 import com.dionlan.minhasfinancas.domain.exception.ErroAutenticacao;
-import com.dionlan.minhasfinancas.domain.exception.LancamentoNaoEncontradoException;
 import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
 import com.dionlan.minhasfinancas.domain.exception.UsuarioNaoEncontradoException;
 import com.dionlan.minhasfinancas.domain.repository.UsuarioRepository;
@@ -57,12 +56,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 		if(existe) {
 			throw new RegraNegocioException("Já existe um usuário cadastrado com esse e-mail.");
 		}
-	}
-	
-	@Override
-	public Optional<Usuario> obterPorId(Long id) {
-		return usuarioRepository.findById(id);
-
 	}
 	
 	@Override

@@ -1,5 +1,7 @@
 package com.dionlan.minhasfinancas.api.resource;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +13,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dionlan.minhasfinancas.api.assembler.LancamentoEntradaDTODisassembler;
 import com.dionlan.minhasfinancas.api.assembler.LancamentoInput;
 import com.dionlan.minhasfinancas.domain.entity.Lancamento;
+import com.dionlan.minhasfinancas.domain.entity.Usuario;
 import com.dionlan.minhasfinancas.domain.entity.dto.LancamentoDTO;
 import com.dionlan.minhasfinancas.domain.entity.dto.LancamentoSaidaDTO;
-import com.dionlan.minhasfinancas.domain.exception.NegocioException;
 import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
 import com.dionlan.minhasfinancas.domain.exception.UsuarioNaoEncontradoException;
 import com.dionlan.minhasfinancas.domain.service.LancamentoService;
@@ -33,13 +36,19 @@ public class LancamentoResource {
 	private LancamentoService service;
 	
 	@Autowired
-	private UsuarioService usuarioService;
-	
-	@Autowired
 	private LancamentoSaidaDTO lancamentoSaidaDTO;
 	
 	@Autowired
 	private LancamentoEntradaDTODisassembler lancamentoEntradaDTODisassembler;
+	
+	@Autowired
+	private UsuarioService usuarioService;
+	
+	/*
+	@GetMapping
+	public List<LancamentoDTO> listar(){
+		return lancamentoSaidaDTO.converteParaColecaode(service.listar());
+	} */
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -49,7 +58,7 @@ public class LancamentoResource {
 			return lancamentoSaidaDTO.converteParaDto(service.salvar(entidadeLancamento));
 
 		}catch(UsuarioNaoEncontradoException e) {
-			throw new NegocioException(e.getMessage());
+			throw new RegraNegocioException(e.getMessage());
 		}
 	}
 	
@@ -59,17 +68,40 @@ public class LancamentoResource {
 		
 		return lancamentoSaidaDTO.converteParaDto(lancamento);
 	}
+	
+	@GetMapping
+	public List<LancamentoDTO> buscar(@RequestParam(value = "descricao", required = false) String descricao,
+								@RequestParam(value = "mes", required = false) Integer mes,
+								@RequestParam(value = "ano", required = false) Integer ano,
+								@RequestParam(value = "usuario", required = true) Long id){
+		
+		Lancamento lancamentoFiltro = new Lancamento();
+		lancamentoFiltro.setDescricao(descricao);
+		lancamentoFiltro.setMes(mes);
+		lancamentoFiltro.setAno(ano);
+		
+		Usuario usuario = usuarioService.buscarOuFalhar(id);
+		lancamentoFiltro.setUsuario(usuario);
+		
+		List<Lancamento> lancamentos = service.buscar(lancamentoFiltro);
+		
+		return lancamentoSaidaDTO.converteParaColecaode(lancamentos);
+		
+		
+	}
 
 	
 	@PutMapping("/{id}")
-	public LancamentoDTO atualizar(@PathVariable Long id, @RequestBody LancamentoDTO lancamentoDto){
+	public LancamentoDTO atualizar(@PathVariable Long id, @RequestBody LancamentoInput lancamentoInput){
 		try {
 			Lancamento lancamentoAtual = service.obterPorId(id);
-			lancamentoEntradaDTODisassembler.converteDtoParaEntidadeParaAtualizacao(lancamentoDto, lancamentoAtual);
-			return lancamentoSaidaDTO.converteParaDto(lancamentoAtual);
 			
-		}catch(RegraNegocioException e) {
-			throw new RegraNegocioException("Usuário não encontrado para o Id informado.");
+			lancamentoEntradaDTODisassembler.converteDtoParaEntidadeParaAtualizacao(lancamentoInput, lancamentoAtual);
+			
+			return lancamentoSaidaDTO.converteParaDto(service.salvar(lancamentoAtual));
+			
+		}catch(UsuarioNaoEncontradoException e) {
+			throw new RegraNegocioException(e.getMessage());
 		}
 	}
 	

@@ -7,6 +7,7 @@ import com.dionlan.minhasfinancas.domain.enums.StatusLancamento;
 
 public interface LancamentoService {
 
+	List<Lancamento> listar();
 	Lancamento salvar(Lancamento lancamento);
 	Lancamento atualizar(Lancamento lancamento);
 	List<Lancamento> buscar(Lancamento lancamentoFiltro);
@@ -14,5 +15,6 @@ public interface LancamentoService {
 	void atualizarStatus(Lancamento lancamento, StatusLancamento statusLancamento);
 	void validarLancamento(Lancamento lancamento);
 	Lancamento obterPorId(Long id);
+	
 }
 

@@ -33,6 +33,11 @@ public class LancamentoServiceImpl implements LancamentoService{
 	private UsuarioService usuarioService;
 	
 	@Override
+	public List<Lancamento> listar(){
+		return repository.findAll();
+	}
+	
+	@Override
 	@Transactional
 	public Lancamento salvar(Lancamento lancamento) {
 		validarLancamento(lancamento);
@@ -63,13 +68,18 @@ public class LancamentoServiceImpl implements LancamentoService{
 	@Override
 	@Transactional(readOnly = true)
 	public List<Lancamento> buscar(Lancamento lancamentoFiltro) {
-		Example<Lancamento> example = Example.of(lancamentoFiltro, ExampleMatcher
-				.matching()
-				.withIgnoreCase()
-				.withStringMatcher(StringMatcher.CONTAINING));
+		try {
+			Example<Lancamento> example = Example.of(lancamentoFiltro, ExampleMatcher
+					.matching()
+					.withIgnoreCase()
+					.withStringMatcher(StringMatcher.CONTAINING));
+			
+			
+			return repository.findAll(example);
+		}catch(LancamentoNaoEncontradoException e) {
+			throw new LancamentoNaoEncontradoException(e.getMessage());
+		}
 		
-		
-		return repository.findAll(example);
 	}
 
 	@Override

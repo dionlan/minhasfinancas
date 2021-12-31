@@ -28,7 +28,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.dionlan.minhasfinancas.core.validation.ValidacaoException;
 import com.dionlan.minhasfinancas.domain.exception.EntidadeEmUsoException;
 import com.dionlan.minhasfinancas.domain.exception.EntidadeNaoEncontradaException;
-import com.dionlan.minhasfinancas.domain.exception.NegocioException;
+import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
@@ -233,8 +233,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	}
 	
-	@ExceptionHandler(NegocioException.class)
-	public ResponseEntity<?> handleNegocio(NegocioException ex, WebRequest request){
+	@ExceptionHandler(RegraNegocioException.class)
+	public ResponseEntity<?> handleNegocio(RegraNegocioException ex, WebRequest request){
 		
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		ProblemType problemType = ProblemType.ERRO_NEGOCIO;

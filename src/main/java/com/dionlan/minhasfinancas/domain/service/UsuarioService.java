@@ -1,7 +1,5 @@
 package com.dionlan.minhasfinancas.domain.service;
 
-import java.util.Optional;
-
 import com.dionlan.minhasfinancas.domain.entity.Usuario;
 
 public interface UsuarioService {
@@ -11,8 +9,6 @@ public interface UsuarioService {
 	Usuario salvarUsuario(Usuario usuario);
 	
 	void validarEmail(String email);
-	
-	Optional<Usuario> obterPorId(Long id);
 	
 	Usuario buscarOuFalhar(Long id);
 	
