@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dionlan.minhasfinancas.api.assembler.LancamentoEntradaDTODisassembler;
 import com.dionlan.minhasfinancas.api.assembler.LancamentoInput;
+import com.dionlan.minhasfinancas.api.assembler.StatusLancamentoInput;
 import com.dionlan.minhasfinancas.domain.entity.Lancamento;
 import com.dionlan.minhasfinancas.domain.entity.Usuario;
 import com.dionlan.minhasfinancas.domain.entity.dto.LancamentoDTO;
 import com.dionlan.minhasfinancas.domain.entity.dto.LancamentoSaidaDTO;
+import com.dionlan.minhasfinancas.domain.enums.StatusLancamento;
 import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
 import com.dionlan.minhasfinancas.domain.exception.UsuarioNaoEncontradoException;
 import com.dionlan.minhasfinancas.domain.service.LancamentoService;
@@ -99,6 +101,22 @@ public class LancamentoResource {
 			lancamentoEntradaDTODisassembler.converteDtoParaEntidadeParaAtualizacao(lancamentoInput, lancamentoAtual);
 			
 			return lancamentoSaidaDTO.converteParaDto(service.salvar(lancamentoAtual));
+			
+		}catch(UsuarioNaoEncontradoException e) {
+			throw new RegraNegocioException(e.getMessage());
+		}
+	}
+	
+	@PutMapping("/{id}/atualiza-status")
+	public LancamentoDTO atualizarStatus(@PathVariable Long id, @RequestBody StatusLancamentoInput status){
+		try {
+			Lancamento lancamentoAtual = service.obterPorId(id);
+			
+			StatusLancamento statusLancamento = StatusLancamento.valueOf(status.getStatus());
+			
+			lancamentoAtual.setStatus(statusLancamento);
+			
+			return lancamentoSaidaDTO.converteParaDto(service.atualizar(lancamentoAtual));
 			
 		}catch(UsuarioNaoEncontradoException e) {
 			throw new RegraNegocioException(e.getMessage());

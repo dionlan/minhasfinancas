@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dionlan.minhasfinancas.domain.entity.Lancamento;
 import com.dionlan.minhasfinancas.domain.entity.Usuario;
 import com.dionlan.minhasfinancas.domain.enums.StatusLancamento;
+import com.dionlan.minhasfinancas.domain.enums.TipoLancamento;
 import com.dionlan.minhasfinancas.domain.exception.EntidadeEmUsoException;
 import com.dionlan.minhasfinancas.domain.exception.LancamentoNaoEncontradoException;
 import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
@@ -131,6 +132,22 @@ public class LancamentoServiceImpl implements LancamentoService{
 		if(lancamento.getTipo() == null) {
 			throw new RegraNegocioException("Informe um tipo de lançamento.");
 		}
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public BigDecimal obterSaldoPorUsuario(Long id) {
+		BigDecimal receitas = repository.obterSaldoPorTipoLancamentoEUsuario(id, TipoLancamento.RECEITA);
+		BigDecimal despesas = repository.obterSaldoPorTipoLancamentoEUsuario(id, TipoLancamento.DESPESA);
+		
+		if(receitas == null) {
+			receitas = BigDecimal.ZERO;
+		}
+		
+		if(despesas == null) {
+			despesas = BigDecimal.ZERO;
+		}
+		return receitas.subtract(despesas);
 	}
 	
 }

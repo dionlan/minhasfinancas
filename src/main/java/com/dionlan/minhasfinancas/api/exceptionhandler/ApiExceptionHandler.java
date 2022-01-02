@@ -18,6 +18,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -59,6 +60,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
 	}
 	
+	
+	@Override
+	protected ResponseEntity<Object> handleMissingServletRequestParameter(
+			MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+		ProblemType problemType = ProblemType.DADOS_INVALIDOS;
+		String detail = String.format("A propriedade '%s' é obrigatória. Corrija e informe um valor compatível com o tipo %s. ", ex.getParameterName(),  ex.getParameterType());
+		
+		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+				.build();
+		
+		return handleExceptionInternal(ex, problem, headers, status, request);
+	}
 	
 	private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
