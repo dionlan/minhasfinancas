@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -27,6 +29,8 @@ public class Usuario {
 	private Long id;
 	private String nome;
 	private String email;
+	
+	@JsonIgnore
 	private String senha;
 	
 	@CreationTimestamp

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dionlan.minhasfinancas.domain.entity.Usuario;
 import com.dionlan.minhasfinancas.domain.entity.dto.UsuarioDTO;
 import com.dionlan.minhasfinancas.domain.exception.ErroAutenticacao;
+import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
 import com.dionlan.minhasfinancas.domain.service.LancamentoService;
 import com.dionlan.minhasfinancas.domain.service.UsuarioService;
 
@@ -38,26 +39,25 @@ public class UsuarioResource {
 			return ResponseEntity.ok().body(usuarioAutenticado);
 			
 		}catch(ErroAutenticacao e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 
 	@PostMapping("/salvar")
 	public ResponseEntity<?> salvar(@RequestBody UsuarioDTO usuarioDto) {
-		/*
-		Usuario usuarioEntity = Usuario.builder()
-				.email(usuarioDto.getEmail())
-				.nome(usuarioDto.getNome())
-				.senha(usuarioDto.getSenha())
-				.build();
+		
+		Usuario usuarioEntity = new Usuario();
+		usuarioEntity.setEmail(usuarioDto.getEmail());
+		usuarioEntity.setNome(usuarioDto.getNome());
+		usuarioEntity.setSenha(usuarioDto.getSenha());
+		
 		try {
 			Usuario usuarioSalvo = service.salvarUsuario(usuarioEntity);
 			return ResponseEntity.status(HttpStatus.CREATED).body(usuarioSalvo);
 			
 		}catch(RegraNegocioException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
-		} */
-		return null;
+		} 
 	}
 	
 	@DeleteMapping("/{id}")
