@@ -30,7 +30,7 @@ public class LancamentoServiceImpl implements LancamentoService{
 	@Autowired
 	private LancamentoRepository repository;
 	
-	@Autowired
+	@Autowired(required = true)
 	private UsuarioService usuarioService;
 	
 	@Override
@@ -82,6 +82,14 @@ public class LancamentoServiceImpl implements LancamentoService{
 		}
 		
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<Lancamento> findByIdUsuario(Long id_usuario) {
+		
+		return repository.findByUsuario(id_usuario);
+	}
+	
 
 	@Override
 	@Transactional
@@ -149,5 +157,6 @@ public class LancamentoServiceImpl implements LancamentoService{
 		}
 		return receitas.subtract(despesas);
 	}
-	
+
+
 }

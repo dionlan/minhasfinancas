@@ -46,11 +46,11 @@ public class LancamentoResource {
 	@Autowired
 	private UsuarioService usuarioService;
 	
-	/*
-	@GetMapping
+	
+	//@GetMapping
 	public List<LancamentoDTO> listar(){
 		return lancamentoSaidaDTO.converteParaColecaode(service.listar());
-	} */
+	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -69,6 +69,18 @@ public class LancamentoResource {
 		Lancamento lancamento = service.obterPorId(id);
 		
 		return lancamentoSaidaDTO.converteParaDto(lancamento);
+	}
+	
+	@GetMapping("/lancamentos/{id_usuario}")
+	public List<LancamentoDTO> buscarLancamentosPorUsuario(@PathVariable(name = "id_usuario") Long id_usuario) {
+		
+		Usuario usuario = usuarioService.buscarOuFalhar(id_usuario);
+		Lancamento lancamento = new Lancamento();
+		lancamento.setUsuario(usuario);
+		List<Lancamento> lancamentos = service.buscar(lancamento); 
+		
+		return lancamentoSaidaDTO.converteParaColecaode(lancamentos);
+		 
 	}
 	
 	@GetMapping

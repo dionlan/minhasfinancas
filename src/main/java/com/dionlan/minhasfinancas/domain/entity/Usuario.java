@@ -13,8 +13,6 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -35,7 +33,6 @@ public class Usuario {
 	@Column(name = "data_cadastro", nullable = false, columnDefinition = "datetime")
 	private OffsetDateTime dataCadastro;
 	
-	@JsonIgnore
 	@OneToMany (mappedBy = "usuario")
 	private List<Lancamento> lancamentos = new ArrayList<>();
 }

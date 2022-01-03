@@ -21,18 +21,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.dionlan.minhasfinancas.domain.enums.StatusLancamento;
 import com.dionlan.minhasfinancas.domain.enums.TipoLancamento;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
-@Entity
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)	
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity
 public class Lancamento {
 
 	@EqualsAndHashCode.Include

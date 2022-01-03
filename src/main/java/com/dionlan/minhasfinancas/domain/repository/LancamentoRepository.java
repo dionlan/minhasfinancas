@@ -1,6 +1,7 @@
 package com.dionlan.minhasfinancas.domain.repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +16,5 @@ public interface LancamentoRepository extends JpaRepository<Lancamento, Long>{
 				+ "  where u.id = :idUsuario and l.tipo = :tipo group by u")
 	BigDecimal obterSaldoPorTipoLancamentoEUsuario(@Param("idUsuario") Long idUsuario, @Param("tipo") TipoLancamento tipo);
 
+	List<Lancamento> findByUsuario(Long id);
 }

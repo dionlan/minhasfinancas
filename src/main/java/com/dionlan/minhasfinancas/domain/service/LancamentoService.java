@@ -12,6 +12,7 @@ public interface LancamentoService {
 	Lancamento salvar(Lancamento lancamento);
 	Lancamento atualizar(Lancamento lancamento);
 	List<Lancamento> buscar(Lancamento lancamentoFiltro);
+	List<Lancamento> findByIdUsuario(Long id);
 	void deletar(Long id);
 	void atualizarStatus(Lancamento lancamento, StatusLancamento statusLancamento);
 	void validarLancamento(Lancamento lancamento);

@@ -66,6 +66,12 @@ public class UsuarioResource {
 		service.deletar(id);
 	}
 	
+	@GetMapping("/{id}")
+	public Usuario buscaUsuarioPorId(@PathVariable("id") Long id) {
+		Usuario usuario = service.buscarOuFalhar(id);
+		return usuario;
+	}
+	
 	@GetMapping("/{id}/saldo")
 	public BigDecimal obterSaldo(@PathVariable("id") Long id) {
 		service.buscarOuFalhar(id);
