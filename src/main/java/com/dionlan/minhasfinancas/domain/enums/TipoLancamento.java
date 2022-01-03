@@ -1,4 +1,4 @@
-package com.dionlan.minhasfinancas.model.enums;
+package com.dionlan.minhasfinancas.domain.enums;
 
 public enum TipoLancamento {
 

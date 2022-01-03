@@ -2,7 +2,6 @@ package com.dionlan.minhasfinancas.model.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.dionlan.minhasfinancas.model.entity.Usuario;
+import com.dionlan.minhasfinancas.domain.entity.Usuario;
+import com.dionlan.minhasfinancas.domain.repository.UsuarioRepository;
 
 /**
  * Testes de integração. Acessa recursos fora da aplicação, como o repositório do banco de dados. Diferente do teste unitário;
@@ -31,10 +31,10 @@ import com.dionlan.minhasfinancas.model.entity.Usuario;
 public class UsuarioServiceRepositoryTest {
 	
 	@Autowired
-	private UsuarioRepository usuarioRepository;
+	private static UsuarioRepository usuarioRepository;
 	
 	@Autowired
-	private TestEntityManager entityManager;
+	private static TestEntityManager entityManager;
 	
 	@Test
 	public void deveVerificarAExistenciaDeUmEmail() {
@@ -96,13 +96,17 @@ public class UsuarioServiceRepositoryTest {
 	}
 	
 	public static Usuario criarUsuario() {
-		return Usuario
-				.builder()
-				.nome("Dionlan Alves de Jesus")
-				.email("dionlan.alves@gmail.com")
-				.senha("dionlan")
-				.dataCadastro(LocalDateTime.now())
-				.build();
+		
+		Optional<Usuario> usuarioOptional = usuarioRepository.findById(1L);
+		Usuario usuario = new Usuario();
+		usuario.setId(usuarioOptional.get().getId());
+		usuario.setEmail(usuarioOptional.get().getEmail());
+		usuario.setNome(usuarioOptional.get().getNome());
+		usuario.setSenha(usuarioOptional.get().getSenha());
+		usuario.setDataCadastro(usuarioOptional.get().getDataCadastro());
+		usuario.setLancamentos(usuarioOptional.get().getLancamentos());
+		
+		return usuario;
 	}
 
 }
