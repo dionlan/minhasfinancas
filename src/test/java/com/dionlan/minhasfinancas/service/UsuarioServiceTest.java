@@ -3,6 +3,7 @@ package com.dionlan.minhasfinancas.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
@@ -14,11 +15,11 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.dionlan.minhasfinancas.model.entity.Usuario;
-import com.dionlan.minhasfinancas.model.exception.ErroAutenticacao;
-import com.dionlan.minhasfinancas.model.exception.RegraNegocioException;
-import com.dionlan.minhasfinancas.model.repository.UsuarioRepository;
-import com.dionlan.minhasfinancas.model.service.impl.UsuarioServiceImpl;
+import com.dionlan.minhasfinancas.domain.entity.Usuario;
+import com.dionlan.minhasfinancas.domain.exception.ErroAutenticacao;
+import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
+import com.dionlan.minhasfinancas.domain.repository.UsuarioRepository;
+import com.dionlan.minhasfinancas.domain.service.impl.UsuarioServiceImpl;
 
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("/application-test.properties")
@@ -33,13 +34,13 @@ public class UsuarioServiceTest {
 	@Test
 	public void deveSalvarUmUsuario(){
 		//cenário
+		
 		Mockito.doNothing().when(usuarioService).validarEmail(Mockito.anyString());
-		Usuario usuario = Usuario
-				.builder()
-				.id(1L)
-				.nome("nome")
-				.email("email@email.com")
-				.senha("senha").build();
+		Usuario usuario = new Usuario();
+		usuario.setId(1L);
+		usuario.setNome("nome");
+		usuario.setEmail("email@email.com");
+		usuario.setSenha("senha");
 		
 		Mockito.when(usuarioRepository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
 		
@@ -51,6 +52,7 @@ public class UsuarioServiceTest {
 		assertThat(usuarioSalvo.getNome()).isEqualTo("nome");
 		assertThat(usuarioSalvo.getEmail()).isEqualTo("email@email.com");
 		assertThat(usuarioSalvo.getSenha()).isEqualTo("senha");
+		
 	}
 	
 	/**
@@ -59,8 +61,9 @@ public class UsuarioServiceTest {
 	@Test
 	public void naoDeveSalvarUmUsuarioComEmailJaCadastrado(){
 		//cenário
-		String email = "email@email.com";
-		Usuario usuario = Usuario.builder().email(email).build();
+		String email = "dionlan@dionlan.com";
+		Usuario usuario = new Usuario();
+		usuario.setEmail(email);
 		Mockito.doThrow(RegraNegocioException.class).when(usuarioService).validarEmail(email);
 		
 		//ação / execução
@@ -74,10 +77,12 @@ public class UsuarioServiceTest {
 	
 	@Test
 	public void deveAutenticarUmUsuarioComSucesso() {
-		String email = "dionlan.alves@gmail.com";
-		String senha = "dionlan";
+		String email = "emailAindaNaoCadastrado@emailAindaNaoCadastrado.com";
+		String senha = "senhaUsuarioTesteIngração";
 		
-		Usuario usuario = Usuario.builder().email(email).senha(senha).id(1L).build();
+		Usuario usuario = new Usuario();
+		usuario.setEmail(email);
+		usuario.setSenha(senha);
 		
 		Mockito.when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
 		
@@ -96,7 +101,7 @@ public class UsuarioServiceTest {
 		Mockito.when(usuarioRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
 		
 		//ação / execução
-		 Throwable exception = catchThrowable(() -> usuarioService.autenticar("dionlan.alves@gmail.com", "123"));
+		 Throwable exception = catchThrowable(() -> usuarioService.autenticar("asdf@asdf.com", "123"));
 		 
 		 assertThat(exception)
 		 .isInstanceOf(ErroAutenticacao.class)
@@ -107,11 +112,13 @@ public class UsuarioServiceTest {
 	public void deveLancarErro_QuandoSenhaNaoBater() {
 		//cenário
 		String senha = "dionlan";
-		Usuario usuario = Usuario.builder().email("dionlan.alves@gmail.com").senha(senha).build();
+		Usuario usuario = new Usuario();
+		usuario.setEmail("dionlan@dionlan.com");
+		usuario.setSenha(senha);
 		Mockito.when(usuarioRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(usuario));
 		
 		//ação / execução
-		 Throwable exception = catchThrowable(() -> usuarioService.autenticar("dionlan.alves@gmail.com", "123"));
+		 Throwable exception = catchThrowable(() -> usuarioService.autenticar("dionlan@dionlan.com", "123"));
 		 
 		 assertThat(exception)
 		 .isInstanceOf(ErroAutenticacao.class)
@@ -124,11 +131,11 @@ public class UsuarioServiceTest {
 	 */
 	@Test
 	public void deveValidarEmail_QuandoNaoHouverOutroEmailIgualCadastrado() {
-		//cenário
+		//cenário -> simula que não existe o email informado na base de dados (returna falso)
 		Mockito.when(usuarioRepository.existsByEmail(Mockito.anyString())).thenReturn(false);
 		
 		//ação / execução
-		usuarioService.validarEmail("dionlan.alves@gmail.com");
+		usuarioService.validarEmail("dionlan@dionlan.com");
 		
 	}
 	
@@ -137,22 +144,22 @@ public class UsuarioServiceTest {
 	 */
 	@Test
 	public void deveLancarErroAoValidarEmail_QuandoExistirEmailCadastrado() {
-		//cenário
+		//cenário -> simula que não existe o email informado na base de dados (retorna true)
 		Mockito.when(usuarioRepository.existsByEmail(Mockito.anyString())).thenReturn(true);
 		
-		/**Usuario usuario = Usuario.builder()
-				.nome("Dionlan Alves de Jesus")
-				.email("dionlan.alves@gmail.com")
-				.senha("dionlan")
-				.dataCadastro(LocalDateTime.now())
-				.build(); 
-			
-				
-			usuarioRepository.save(usuario);	
-				*/
 		//ação / execução
 		Assertions.assertThrows(RegraNegocioException.class, () -> {
-			usuarioService.validarEmail("dionlan.alves@gmail.com");
+			usuarioService.validarEmail("dionlan@dionlan.com");
 		});
+	}
+	
+	public void criaESalvaUsuario() {
+		Usuario usuario = new Usuario();
+		
+		usuario.setNome("Usuario Teste de Integração");
+		usuario.setEmail("dionlan@dionlan.com");
+		usuario.setSenha("senhaUsuarioTesteIngração");
+		usuario.setDataCadastro(OffsetDateTime.now());
+		usuarioService.salvarUsuario(usuario);
 	}
 }
