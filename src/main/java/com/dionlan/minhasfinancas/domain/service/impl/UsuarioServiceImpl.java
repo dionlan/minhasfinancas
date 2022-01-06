@@ -1,7 +1,5 @@
 package com.dionlan.minhasfinancas.domain.service.impl;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -29,17 +27,17 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	@Override
 	public Usuario autenticar(String email, String senha) {
-		Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+		Usuario usuario = usuarioRepository.findByEmail(email);
 		
-		if(!usuario.isPresent()) {
+		if(usuario == null) {
 			throw new ErroAutenticacao("Usuário não encontrado para o e-mail informado.");
 		}
 		
-		if(!usuario.get().getSenha().equals(senha)) {
+		if(!usuario.getSenha().equals(senha)) {
 			throw new ErroAutenticacao("Senha incorreta.");
 		}
 		
-		return usuario.get();
+		return usuario;
 	}
 
 	@Override

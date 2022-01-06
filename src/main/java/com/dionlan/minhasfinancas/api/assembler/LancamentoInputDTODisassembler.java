@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.dionlan.minhasfinancas.domain.entity.Lancamento;
 
 @Component
-public class LancamentoEntradaDTODisassembler {
+public class LancamentoInputDTODisassembler {
 	
 	@Autowired
 	private ModelMapper modelMapper;

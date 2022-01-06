@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dionlan.minhasfinancas.api.assembler.LancamentoEntradaDTODisassembler;
+import com.dionlan.minhasfinancas.api.assembler.LancamentoInputDTODisassembler;
 import com.dionlan.minhasfinancas.api.assembler.LancamentoInput;
 import com.dionlan.minhasfinancas.api.assembler.StatusLancamentoInput;
 import com.dionlan.minhasfinancas.domain.entity.Lancamento;
@@ -41,7 +41,7 @@ public class LancamentoResource {
 	private LancamentoSaidaDTO lancamentoSaidaDTO;
 	
 	@Autowired
-	private LancamentoEntradaDTODisassembler lancamentoEntradaDTODisassembler;
+	private LancamentoInputDTODisassembler lancamentoEntradaDTODisassembler;
 	
 	@Autowired
 	private UsuarioService usuarioService;

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -84,7 +83,7 @@ public class UsuarioServiceTest {
 		usuario.setEmail(email);
 		usuario.setSenha(senha);
 		
-		Mockito.when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
+		Mockito.when(usuarioRepository.findByEmail(email)).thenReturn(usuario);
 		
 		//ação / execução
 		Usuario usuarioAutenticado = usuarioService.autenticar(email, senha);
@@ -98,7 +97,7 @@ public class UsuarioServiceTest {
 	@Test
 	public void deveLancarErro_QuandoNaoEncontrarUsuarioCadastradoComOEmailInformado() {
 		//cenário
-		Mockito.when(usuarioRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+		Mockito.when(usuarioRepository.findByEmail(Mockito.anyString())).thenReturn(null);
 		
 		//ação / execução
 		 Throwable exception = catchThrowable(() -> usuarioService.autenticar("asdf@asdf.com", "123"));
@@ -115,7 +114,7 @@ public class UsuarioServiceTest {
 		Usuario usuario = new Usuario();
 		usuario.setEmail("dionlan@dionlan.com");
 		usuario.setSenha(senha);
-		Mockito.when(usuarioRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(usuario));
+		Mockito.when(usuarioRepository.findByEmail(Mockito.anyString())).thenReturn(usuario);
 		
 		//ação / execução
 		 Throwable exception = catchThrowable(() -> usuarioService.autenticar("dionlan@dionlan.com", "123"));

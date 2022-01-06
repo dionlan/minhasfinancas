@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dionlan.minhasfinancas.api.assembler.UsuarioInput;
+import com.dionlan.minhasfinancas.api.assembler.UsuarioInputDTODisassembler;
 import com.dionlan.minhasfinancas.domain.entity.Usuario;
 import com.dionlan.minhasfinancas.domain.entity.dto.UsuarioDTO;
+import com.dionlan.minhasfinancas.domain.entity.dto.UsuarioSaidaDTO;
 import com.dionlan.minhasfinancas.domain.exception.ErroAutenticacao;
 import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
 import com.dionlan.minhasfinancas.domain.service.LancamentoService;
@@ -31,15 +34,21 @@ public class UsuarioResource {
 	@Autowired
 	private LancamentoService lancamentoService;
 	
+	@Autowired
+	private UsuarioInputDTODisassembler usuarioInputDTODisassembler;
+	
+	@Autowired
+	private UsuarioSaidaDTO usuarioDtoDisassembler;
+	
 	@PostMapping("/autenticar")
-	public ResponseEntity<?> autenticar(@RequestBody UsuarioDTO usuarioDto){
+	public UsuarioDTO autenticar(@RequestBody UsuarioInput usuarioInput){
 		
 		try {
-			Usuario usuarioAutenticado = service.autenticar(usuarioDto.getEmail(), usuarioDto.getSenha());
-			return ResponseEntity.ok().body(usuarioAutenticado);
+			Usuario usuarioAutenticado = usuarioInputDTODisassembler.converteDtoParaEntidade(usuarioInput);
+			return usuarioDtoDisassembler.converteParaDto(service.autenticar(usuarioAutenticado.getEmail(), usuarioAutenticado.getSenha()));
 			
 		}catch(ErroAutenticacao e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+			throw new RegraNegocioException(e.getMessage());
 		}
 	}
 

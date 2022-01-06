@@ -81,18 +81,18 @@ public class UsuarioServiceRepositoryTest {
 		entityManager.persist(usuario);
 		
 		//verificação
-		Optional<Usuario> resultado = usuarioRepository.findByEmail("dionlan.alves@gmail.com");
+		Usuario resultado = usuarioRepository.findByEmail("dionlan.alves@gmail.com");
 		
-		assertThat(resultado.isPresent()).isTrue();	
+		assertThat(resultado).isNotNull();	
 	}
 	
 	@Test
 	public void deveRetornarVazioAoBuscarUsuarioPorEmail_QuandoNaoExistirNaBase() {
 
 		//verificação
-		Optional<Usuario> resultado = usuarioRepository.findByEmail("dionlan.alves@gmail.com");
+		Usuario resultado = usuarioRepository.findByEmail("dionlan.alves@gmail.com");
 		
-		assertThat(resultado.isPresent()).isFalse();	
+		assertThat(resultado).isNull();	
 	}
 	
 	public static Usuario criarUsuario() {

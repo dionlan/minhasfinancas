@@ -35,10 +35,10 @@ public class UsuarioResourceTest {
 	@Test
 	public void deveAutenticarUmUsuario() throws Exception {
 		//cenário
-		String nome = "usuario mock";
-		String email = "usuario@email.com";
-		String senha = "123";
-		UsuarioDTO dto = UsuarioDTO.builder().email(email).senha(senha).build();
+		String nome = "Dionlan Alves de Jesus";
+		String email = "dionlan@dionlan.com";
+		String senha = "dionlanSenha";
+		UsuarioDTO dto = criaUsuarioDTO();
 		
 		Usuario usuario = new Usuario();
 		usuario.setId(1L);
@@ -66,9 +66,9 @@ public class UsuarioResourceTest {
 	@Test
 	public void deveRetornarBadRequestAoObterErroDeAutenticacao() throws Exception {
 		//cenário
-		String email = "usuario@email.com";
-		String senha = "123";
-		UsuarioDTO dto = UsuarioDTO.builder().email(email).senha(senha).build();
+		String email = "dionlan@dionlan.com";
+		String senha = "dionlanSenha";
+		UsuarioDTO dto = criaUsuarioDTO();
 		
 		Mockito.when(usuarioService.autenticar(email, senha)).thenThrow(ErroAutenticacao.class);
 		
@@ -87,11 +87,11 @@ public class UsuarioResourceTest {
 	@Test
 	public void deveCriarUmNovoUsuario() throws Exception {
 		//cenário
-		String nome = "usuario mock";
-		String email = "usuario@email.com";
-		String senha = "123";
+		String nome = "Dionlan Alves de Jesus";
+		String email = "dionlan@dionlan.com";
+		String senha = "dionlanSenha";
 		
-		UsuarioDTO dto = UsuarioDTO.builder().email(email).senha(senha).build();
+		UsuarioDTO dto = criaUsuarioDTO();
 		
 		Usuario usuario = new Usuario();
 		usuario.setId(1L);
@@ -122,7 +122,8 @@ public class UsuarioResourceTest {
 		String nome = "usuario mock";
 		String email = "usuario@email.com";
 		String senha = "123";
-		UsuarioDTO dto = UsuarioDTO.builder().email(email).senha(senha).build();
+		
+		UsuarioDTO dto = criaUsuarioDTO();
 		
 		Usuario usuario = new Usuario();
 		usuario.setId(1L);
@@ -142,5 +143,14 @@ public class UsuarioResourceTest {
 		mvc
 			.perform(request)
 			.andExpect(MockMvcResultMatchers.status().isBadRequest());
+	}
+	
+	public UsuarioDTO criaUsuarioDTO() {
+		UsuarioDTO usuarioDTO = new UsuarioDTO();
+		usuarioDTO.setNome("Dionlan Alves de Jesus");
+		usuarioDTO.setEmail("dionlan@dionlan.com");
+		usuarioDTO.setSenha("dionlanSenha");
+		
+		return usuarioDTO;
 	}
 }
