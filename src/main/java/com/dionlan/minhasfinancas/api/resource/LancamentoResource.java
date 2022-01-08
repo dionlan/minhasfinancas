@@ -25,6 +25,7 @@ import com.dionlan.minhasfinancas.domain.entity.Usuario;
 import com.dionlan.minhasfinancas.domain.entity.dto.LancamentoDTO;
 import com.dionlan.minhasfinancas.domain.entity.dto.LancamentoSaidaDTO;
 import com.dionlan.minhasfinancas.domain.enums.StatusLancamento;
+import com.dionlan.minhasfinancas.domain.enums.TipoLancamento;
 import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
 import com.dionlan.minhasfinancas.domain.exception.UsuarioNaoEncontradoException;
 import com.dionlan.minhasfinancas.domain.service.LancamentoService;
@@ -87,12 +88,14 @@ public class LancamentoResource {
 	public List<LancamentoDTO> buscar(@RequestParam(value = "descricao", required = false) String descricao,
 								@RequestParam(value = "mes", required = false) Integer mes,
 								@RequestParam(value = "ano", required = false) Integer ano,
+								@RequestParam(value = "tipo", required = false) TipoLancamento tipo,
 								@RequestParam(value = "usuario", required = true) Long id){
 		
 		Lancamento lancamentoFiltro = new Lancamento();
 		lancamentoFiltro.setDescricao(descricao);
 		lancamentoFiltro.setMes(mes);
 		lancamentoFiltro.setAno(ano);
+		lancamentoFiltro.setTipo(tipo);
 		
 		Usuario usuario = usuarioService.buscarOuFalhar(id);
 		lancamentoFiltro.setUsuario(usuario);

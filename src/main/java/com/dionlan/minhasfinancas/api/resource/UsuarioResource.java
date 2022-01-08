@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,20 +52,11 @@ public class UsuarioResource {
 	}
 
 	@PostMapping("/salvar")
-	public ResponseEntity<?> salvar(@RequestBody UsuarioDTO usuarioDto) {
+	public UsuarioDTO salvar(@RequestBody UsuarioInput usuarioInput) {
 		
-		Usuario usuarioEntity = new Usuario();
-		usuarioEntity.setEmail(usuarioDto.getEmail());
-		usuarioEntity.setNome(usuarioDto.getNome());
-		usuarioEntity.setSenha(usuarioDto.getSenha());
+		Usuario usuarioCadastrado = usuarioInputDTODisassembler.converteDtoParaEntidade(usuarioInput);
 		
-		try {
-			Usuario usuarioSalvo = service.salvarUsuario(usuarioEntity);
-			return ResponseEntity.status(HttpStatus.CREATED).body(usuarioSalvo);
-			
-		}catch(RegraNegocioException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-		} 
+		return usuarioDtoDisassembler.converteParaDto(service.salvarUsuario(usuarioCadastrado));
 	}
 	
 	@DeleteMapping("/{id}")
