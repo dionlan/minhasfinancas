@@ -48,13 +48,13 @@ public class LancamentoResource {
 	private UsuarioService usuarioService;
 	
 	
-	//@GetMapping
+	@GetMapping("/lancamentos")
 	public List<LancamentoDTO> listar(){
 		return lancamentoSaidaDTO.converteParaColecaode(service.listar());
 	}
 	
-	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping("/salvar")
 	public LancamentoDTO salvar(@RequestBody @Valid LancamentoInput lancamentoInput){
 		try {
 			Lancamento entidadeLancamento = lancamentoEntradaDTODisassembler.converteDtoParaEntidade(lancamentoInput);
