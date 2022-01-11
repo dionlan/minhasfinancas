@@ -115,7 +115,7 @@ public class LancamentoResource {
 			
 			lancamentoEntradaDTODisassembler.converteDtoParaEntidadeParaAtualizacao(lancamentoInput, lancamentoAtual);
 			
-			return lancamentoSaidaDTO.converteParaDto(service.salvar(lancamentoAtual));
+			return lancamentoSaidaDTO.converteParaDto(service.atualizar(lancamentoAtual));
 			
 		}catch(UsuarioNaoEncontradoException e) {
 			throw new RegraNegocioException(e.getMessage());
