@@ -13,7 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.dionlan.minhasfinancas.domain.entity.Lancamento;
@@ -25,9 +25,10 @@ import com.dionlan.minhasfinancas.domain.repository.UsuarioRepository;
 
 @DataJpaTest //cria uma transação na base de dados, executa o teste e após faz o rollback do estado antes de cada teste, pode-se retirar o método deleteAll();
 @ExtendWith(SpringExtension.class)
-@TestPropertySource("/application-test.properties")
+//@TestPropertySource("/application-test.properties")
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-public class LancamentoRepositoryTest {
+@ActiveProfiles("test") //ativa o profile de teste carregando o application-teste.properties, faz a mesma coisa que oa TestePropertySource
+public class LancamentoRepositoryTest { 
 
 	@Autowired
 	private LancamentoRepository repository;

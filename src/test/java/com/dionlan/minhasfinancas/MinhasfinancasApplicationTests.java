@@ -11,6 +11,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  * @author Dionlan
  * 
  * Susbstituir @RunWith(SpringRunner.class) para @ExtendWith(SpringExtension.class)
+ * 
+ * Para rodar os testes de integração, retirar o void contextLoads() padrão e deixar o método main.
  *
  */
 @ExtendWith(SpringExtension.class)
@@ -18,8 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @TestPropertySource("/application-test.properties")
 class MinhasfinancasApplicationTests {
 
-	public static void main(String[] args) {
-        SpringApplication.run(MinhasfinancasApplicationTests.class, args);
-    }
-
+		public static void main(String[] args) {
+				SpringApplication.run(MinhasfinancasApplicationTests.class, args);
+	}
 }

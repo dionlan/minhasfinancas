@@ -12,8 +12,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.dionlan.minhasfinancas.api.assembler.UsuarioInput;
 import com.dionlan.minhasfinancas.domain.entity.Usuario;
-import com.dionlan.minhasfinancas.domain.entity.dto.UsuarioDTO;
 import com.dionlan.minhasfinancas.domain.exception.ErroAutenticacao;
 import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
 import com.dionlan.minhasfinancas.domain.service.UsuarioService;
@@ -38,7 +38,7 @@ public class UsuarioResourceTest {
 		String nome = "Dionlan Alves de Jesus";
 		String email = "dionlan@dionlan.com";
 		String senha = "dionlanSenha";
-		UsuarioDTO dto = criaUsuarioDTO();
+		UsuarioInput input = criaUsuarioInput();
 		
 		Usuario usuario = new Usuario();
 		usuario.setId(1L);
@@ -48,7 +48,7 @@ public class UsuarioResourceTest {
 		
 		Mockito.when(usuarioService.autenticar(email, senha)).thenReturn(usuario);
 		
-		String json = new ObjectMapper().writeValueAsString(dto);
+		String json = new ObjectMapper().writeValueAsString(input);
 		
 		//Verificação // Execução
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(API.concat("/autenticar"))
@@ -68,7 +68,7 @@ public class UsuarioResourceTest {
 		//cenário
 		String email = "dionlan@dionlan.com";
 		String senha = "dionlanSenha";
-		UsuarioDTO dto = criaUsuarioDTO();
+		UsuarioInput dto = criaUsuarioInput();
 		
 		Mockito.when(usuarioService.autenticar(email, senha)).thenThrow(ErroAutenticacao.class);
 		
@@ -88,13 +88,13 @@ public class UsuarioResourceTest {
 	public void deveCriarUmNovoUsuario() throws Exception {
 		//cenário
 		String nome = "Dionlan Alves de Jesus";
-		String email = "dionlan@dionlan.com";
+		String email = "dionlans@dionlans.com";
 		String senha = "dionlanSenha";
 		
-		UsuarioDTO dto = criaUsuarioDTO();
+		UsuarioInput dto = criaUsuarioInput();
 		
 		Usuario usuario = new Usuario();
-		usuario.setId(1L);
+		usuario.setId(10L);
 		usuario.setNome(nome);
 		usuario.setEmail(email);
 		usuario.setSenha(senha);
@@ -123,7 +123,7 @@ public class UsuarioResourceTest {
 		String email = "usuario@email.com";
 		String senha = "123";
 		
-		UsuarioDTO dto = criaUsuarioDTO();
+		UsuarioInput dto = criaUsuarioInput();
 		
 		Usuario usuario = new Usuario();
 		usuario.setId(1L);
@@ -145,12 +145,12 @@ public class UsuarioResourceTest {
 			.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
 	
-	public UsuarioDTO criaUsuarioDTO() {
-		UsuarioDTO usuarioDTO = new UsuarioDTO();
-		usuarioDTO.setNome("Dionlan Alves de Jesus");
-		usuarioDTO.setEmail("dionlan@dionlan.com");
-		usuarioDTO.setSenha("dionlanSenha");
+	public UsuarioInput criaUsuarioInput () {
+		UsuarioInput usuarioInput = new UsuarioInput();
+		usuarioInput.setNome("Dionlan Alves de Jesus");
+		usuarioInput.setEmail("dionlan@dionlan.com");
+		usuarioInput.setSenha("dionlanSenha");
 		
-		return usuarioDTO;
+		return usuarioInput;
 	}
 }

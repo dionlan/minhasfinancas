@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -31,20 +30,20 @@ import com.dionlan.minhasfinancas.domain.repository.UsuarioRepository;
 public class UsuarioServiceRepositoryTest {
 	
 	@Autowired
-	private static UsuarioRepository usuarioRepository;
+	private UsuarioRepository usuarioRepository;
 	
-	@Autowired
-	private static TestEntityManager entityManager;
+	//@Autowired
+	//private TestEntityManager entityManager;
 	
 	@Test
 	public void deveVerificarAExistenciaDeUmEmail() {
 		//cenário
 		Usuario usuario = criarUsuario();
-		
-		entityManager.persist(usuario);
+		usuario.setEmail("dionlan@dionlan.com");
+		//entityManager.persist(usuario);
 		
 		//ação / execução
-		boolean resultado = usuarioRepository.existsByEmail("dionlan.alves@gmail.com");
+		boolean resultado = usuarioRepository.existsByEmail(usuario.getEmail());
 		
 		//verificação
 		assertThat(resultado).isTrue();
@@ -56,7 +55,7 @@ public class UsuarioServiceRepositoryTest {
 		//cenário
 		
 		//ação / execução
-		boolean resultado = usuarioRepository.existsByEmail("dionlan.alves@gmail.com");
+		boolean resultado = usuarioRepository.existsByEmail("asdf@dionlan.com");
 		
 		//verificação
 		assertThat(resultado).isFalse();
@@ -77,11 +76,11 @@ public class UsuarioServiceRepositoryTest {
 	@Test
 	public void deveRetornarUsuarioEncontradoPorEmail_QuandoExistirNaBase() {
 		//cenário
-		Usuario usuario = criarUsuario();
-		entityManager.persist(usuario);
+		//Usuario usuario = criarUsuario();
+		//entityManager.persist(usuario);
 		
 		//verificação
-		Usuario resultado = usuarioRepository.findByEmail("dionlan.alves@gmail.com");
+		Usuario resultado = usuarioRepository.findByEmail("dionlan@dionlan.com");
 		
 		assertThat(resultado).isNotNull();	
 	}
@@ -90,12 +89,12 @@ public class UsuarioServiceRepositoryTest {
 	public void deveRetornarVazioAoBuscarUsuarioPorEmail_QuandoNaoExistirNaBase() {
 
 		//verificação
-		Usuario resultado = usuarioRepository.findByEmail("dionlan.alves@gmail.com");
+		Usuario resultado = usuarioRepository.findByEmail("asdf@dionlan.com");
 		
 		assertThat(resultado).isNull();	
 	}
 	
-	public static Usuario criarUsuario() {
+	public Usuario criarUsuario() {
 		
 		Optional<Usuario> usuarioOptional = usuarioRepository.findById(1L);
 		Usuario usuario = new Usuario();

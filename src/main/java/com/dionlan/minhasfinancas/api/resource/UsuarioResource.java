@@ -51,6 +51,7 @@ public class UsuarioResource {
 		}
 	}
 
+	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/salvar")
 	public UsuarioDTO salvar(@RequestBody UsuarioInput usuarioInput) {
 		
