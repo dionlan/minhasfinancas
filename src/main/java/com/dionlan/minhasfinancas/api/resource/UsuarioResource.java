@@ -20,6 +20,7 @@ import com.dionlan.minhasfinancas.domain.entity.dto.UsuarioDTO;
 import com.dionlan.minhasfinancas.domain.entity.dto.UsuarioSaidaDTO;
 import com.dionlan.minhasfinancas.domain.exception.ErroAutenticacao;
 import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
+import com.dionlan.minhasfinancas.domain.service.JwtService;
 import com.dionlan.minhasfinancas.domain.service.LancamentoService;
 import com.dionlan.minhasfinancas.domain.service.UsuarioService;
 
@@ -39,12 +40,18 @@ public class UsuarioResource {
 	@Autowired
 	private UsuarioSaidaDTO usuarioDtoDisassembler;
 	
+	@Autowired
+	private JwtService jwtService;
+	
 	@PostMapping("/autenticar")
 	public UsuarioDTO autenticar(@RequestBody UsuarioInput usuarioInput){
 		
 		try {
 			Usuario usuarioAutenticado = usuarioInputDTODisassembler.converteDtoParaEntidade(usuarioInput);
-			return usuarioDtoDisassembler.converteParaDto(service.autenticar(usuarioAutenticado.getEmail(), usuarioAutenticado.getSenha()));
+			UsuarioDTO usuarioDto = usuarioDtoDisassembler.converteParaDto(service.autenticar(usuarioAutenticado.getEmail(), usuarioAutenticado.getSenha()));
+			String tokenUsuarioAutenticado = jwtService.gerarToken(usuarioDto);
+			usuarioDto.setToken(tokenUsuarioAutenticado);
+			return usuarioDto;
 			
 		}catch(ErroAutenticacao e) {
 			throw new RegraNegocioException(e.getMessage());

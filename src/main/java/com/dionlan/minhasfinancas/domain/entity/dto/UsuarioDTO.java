@@ -15,4 +15,6 @@ public class UsuarioDTO {
 	
 	@JsonIgnore
 	private String senha;
+	
+	private String token;
 }

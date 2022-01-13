@@ -13,6 +13,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  * Susbstituir @RunWith(SpringRunner.class) para @ExtendWith(SpringExtension.class)
  * 
  * Para rodar os testes de integração, retirar o void contextLoads() padrão e deixar o método main.
+ * 
+ * Caso não rode ir em> botão direito no projeto, run as, java application e selecionar a classe main de testes
  *
  */
 @ExtendWith(SpringExtension.class)

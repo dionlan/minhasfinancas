@@ -3,6 +3,7 @@ package com.dionlan.minhasfinancas.domain.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Autowired
 	private UsuarioRepository usuarioRepository; //classe UsuarioService injetando a dependencia (ID) para UsuarioRepository @Autowired 
 	
+	@Autowired
+	private PasswordEncoder encoder;
+	
 	@Override
 	public Usuario autenticar(String email, String senha) {
 		Usuario usuario = usuarioRepository.findByEmail(email);
@@ -33,7 +37,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 			throw new ErroAutenticacao("Usuário não encontrado para o e-mail informado.");
 		}
 		
-		if(!usuario.getSenha().equals(senha)) {
+		boolean senhasBatem = encoder.matches(senha, usuario.getSenha());
+		
+		if(!senhasBatem) {
 			throw new ErroAutenticacao("Senha incorreta.");
 		}
 		
@@ -43,6 +49,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	public Usuario salvarUsuario(Usuario usuario) {
 		validarEmail(usuario.getEmail());
+		criptografarSenha(usuario);
 		return usuarioRepository.save(usuario);
 	}
 
@@ -73,8 +80,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(String.format("Usuário de código %d não pode ser removido pois está em uso.", id));
-
 		}
-
+	}
+	
+	private void criptografarSenha(Usuario usuario) {
+		String senha = usuario.getSenha();
+		String senhaCriptografada = encoder.encode(senha);
+		usuario.setSenha(senhaCriptografada);
 	}
 }

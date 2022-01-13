@@ -1,8 +1,8 @@
 create table usuario (
 	id bigint not null auto_increment,
-    nome varchar(60) not null,
-    email varchar(60) not null,
-    senha varchar(60) not null,
+    nome varchar(255) not null,
+    email varchar(255) not null,
+    senha varchar(255) not null,
     data_cadastro datetime not null,
     
     primary key(id) 
@@ -10,13 +10,13 @@ create table usuario (
 
 create table lancamento (
 	id bigint not null auto_increment,
-    descricao varchar(60) not null,
+    descricao varchar(255) not null,
     ano bigint not null,
     mes bigint not null,
     valor decimal(10,2) not null,
     id_usuario bigint not null,
-    status_lancamento varchar(60) not null,
-    tipo_lancamento varchar(60) not null,
+    status_lancamento varchar(255) not null,
+    tipo_lancamento varchar(255) not null,
     data_cadastro datetime not null,
     
     primary key(id) 
