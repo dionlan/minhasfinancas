@@ -10,14 +10,13 @@ import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Base64Utils;
 
 import com.dionlan.minhasfinancas.domain.entity.dto.UsuarioDTO;
 import com.dionlan.minhasfinancas.domain.service.JwtService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -28,8 +27,14 @@ public class JwtServiceImpl implements JwtService{
 	@Value("${jwt.expiracao}")
 	private String expiracao;
 	
-	SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+	@Value("${jwt.chave-assinatura}")
+	private String chaveAssinatura;
 	
+	SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+	public static final String SECRET = Base64Utils.encodeToString("byBjYWbDqSDDqSBwcmV0bw==".getBytes());
+	
+	
+
 	@Override
 	public String gerarToken(UsuarioDTO usuario) {
 		long expLong = Long.valueOf(expiracao);
@@ -39,26 +44,28 @@ public class JwtServiceImpl implements JwtService{
 		
 		String horaExpiracaoToken = dataHoraExpiracao.toLocalTime()
 				.format(DateTimeFormatter.ofPattern(("HH:mm")));
-		
-		
+		//SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 		
 		String token = Jwts
-							.builder()
-							.setExpiration(data)
-							.setSubject(usuario.getEmail())
-							.claim("nome", usuario.getNome())
-							.claim("horaExpiracao", horaExpiracaoToken)
-							.signWith(key)
-							.compact();
+					.builder()
+					.setExpiration(data)
+					.setSubject(usuario.getEmail())
+					.claim("userId", usuario.getId())
+					.claim("nome", usuario.getNome())
+					.claim("horaExpiracao", horaExpiracaoToken)
+					.signWith(key)
+					.compact();
 		return token;
 	}
 
 	@Override
 	public Claims obterClaims(String token) throws ExpiredJwtException {
-		JwtParser immutableJwtParser = Jwts.parserBuilder().setSigningKey(key).build();
-		
-		Jws<Claims> c = immutableJwtParser.parseClaimsJws(token);
-	    return c.getBody();
+		//Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+		return Jwts
+				.parser()
+				.setSigningKey(key)
+				.parseClaimsJws(token)
+				.getBody();
 	}
 
 	@Override
