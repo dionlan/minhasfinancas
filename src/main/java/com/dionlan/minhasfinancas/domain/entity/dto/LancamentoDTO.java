@@ -15,6 +15,6 @@ public class LancamentoDTO {
 	private Integer mes;
 	private Integer ano;
 	private BigDecimal valor;
-	private UsuarioDTO usuario;
+	private UsuarioReferenciaIdEntrada usuario;
 	private String status;
 }

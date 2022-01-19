@@ -1,5 +1,6 @@
 package com.dionlan.minhasfinancas.domain.entity.dto;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -10,5 +11,6 @@ import lombok.Setter;
 public class UsuarioReferenciaIdEntrada {
 	
 	@NotNull
-	private Long id;
+	@Column(name="id")
+	private Long userId;
 }

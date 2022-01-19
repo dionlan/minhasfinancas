@@ -117,7 +117,7 @@ public class LancamentoRepositoryTest {
 
 		Optional<Usuario> usuarioOptional = usuarioRepository.findById(1L);
 		Usuario usuario = new Usuario();
-		usuario.setId(usuarioOptional.get().getId());
+		usuario.setUserId(usuarioOptional.get().getUserId());
 		usuario.setEmail(usuarioOptional.get().getEmail());
 		usuario.setNome(usuarioOptional.get().getNome());
 		usuario.setSenha(usuarioOptional.get().getSenha());

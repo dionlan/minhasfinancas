@@ -36,7 +36,7 @@ public class UsuarioServiceTest {
 		
 		Mockito.doNothing().when(usuarioService).validarEmail(Mockito.anyString());
 		Usuario usuario = new Usuario();
-		usuario.setId(1L);
+		usuario.setUserId(1L);
 		usuario.setNome("nome");
 		usuario.setEmail("email@email.com");
 		usuario.setSenha("senha");
@@ -47,7 +47,7 @@ public class UsuarioServiceTest {
 		Usuario usuarioSalvo = usuarioService.salvarUsuario(usuario);
 		
 		//verificação
-		assertThat(usuarioSalvo.getId()).isEqualTo(1L);
+		assertThat(usuarioSalvo.getUserId()).isEqualTo(1L);
 		assertThat(usuarioSalvo.getNome()).isEqualTo("nome");
 		assertThat(usuarioSalvo.getEmail()).isEqualTo("email@email.com");
 		assertThat(usuarioSalvo.getSenha()).isEqualTo("senha");

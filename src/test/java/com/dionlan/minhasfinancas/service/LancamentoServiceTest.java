@@ -241,7 +241,7 @@ public class LancamentoServiceTest {
 		erro = catchThrowable(() -> lancamentoService.validarLancamento(lancamento));
 		assertThat(erro).isInstanceOf(RegraNegocioException.class).hasMessage("Informe um usuário.");
 		
-		lancamento.getUsuario().setId(1L);
+		lancamento.getUsuario().setUserId(1L);
 		//lancamento.getUsuario().setNome("Teste");
 		
 		erro = catchThrowable(() -> lancamentoService.validarLancamento(lancamento));
@@ -283,7 +283,7 @@ public class LancamentoServiceTest {
 		List<Lancamento> lancamentos = lancamentoService.buscar(lancamento);
 		
 		Usuario usuario = new Usuario();
-		usuario.setId(usuarioOptional.getId());
+		usuario.setUserId(usuarioOptional.getUserId());
 		usuario.setEmail(usuarioOptional.getEmail());
 		usuario.setNome(usuarioOptional.getNome());
 		usuario.setSenha(usuarioOptional.getSenha());

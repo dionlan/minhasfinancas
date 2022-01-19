@@ -26,7 +26,8 @@ public class Usuario {
 	@Id
 	@EqualsAndHashCode.Include
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@Column(name = "id")
+	private Long userId;
 	private String nome;
 	private String email;
 	

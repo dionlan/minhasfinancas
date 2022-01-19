@@ -70,7 +70,7 @@ public class UsuarioServiceRepositoryTest {
 		usuario = usuarioRepository.save(usuario);
 		
 		//verificação
-		assertThat(usuario.getId()).isNotNull();
+		assertThat(usuario.getUserId()).isNotNull();
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public class UsuarioServiceRepositoryTest {
 		
 		Optional<Usuario> usuarioOptional = usuarioRepository.findById(1L);
 		Usuario usuario = new Usuario();
-		usuario.setId(usuarioOptional.get().getId());
+		usuario.setUserId(usuarioOptional.get().getUserId());
 		usuario.setEmail(usuarioOptional.get().getEmail());
 		usuario.setNome(usuarioOptional.get().getNome());
 		usuario.setSenha(usuarioOptional.get().getSenha());

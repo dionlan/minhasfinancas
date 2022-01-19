@@ -41,7 +41,7 @@ public class UsuarioResourceTest {
 		UsuarioInput input = criaUsuarioInput();
 		
 		Usuario usuario = new Usuario();
-		usuario.setId(1L);
+		usuario.setUserId(1L);
 		usuario.setNome(nome);
 		usuario.setEmail(email);
 		usuario.setSenha(senha);
@@ -58,7 +58,7 @@ public class UsuarioResourceTest {
 		mvc
 			.perform(request)
 			.andExpect(MockMvcResultMatchers.status().isOk())
-			.andExpect(MockMvcResultMatchers.jsonPath("id").value(usuario.getId() ))
+			.andExpect(MockMvcResultMatchers.jsonPath("id").value(usuario.getUserId() ))
 			.andExpect(MockMvcResultMatchers.jsonPath("nome").value(usuario.getNome() ))
 			.andExpect(MockMvcResultMatchers.jsonPath("email").value(usuario.getEmail() ));
 	}
@@ -94,7 +94,7 @@ public class UsuarioResourceTest {
 		UsuarioInput dto = criaUsuarioInput();
 		
 		Usuario usuario = new Usuario();
-		usuario.setId(10L);
+		usuario.setUserId(10L);
 		usuario.setNome(nome);
 		usuario.setEmail(email);
 		usuario.setSenha(senha);
@@ -111,7 +111,7 @@ public class UsuarioResourceTest {
 		mvc
 			.perform(request)
 			.andExpect(MockMvcResultMatchers.status().isCreated())
-			.andExpect(MockMvcResultMatchers.jsonPath("id").value(usuario.getId() ))
+			.andExpect(MockMvcResultMatchers.jsonPath("id").value(usuario.getUserId() ))
 			.andExpect(MockMvcResultMatchers.jsonPath("nome").value(usuario.getNome() ))
 			.andExpect(MockMvcResultMatchers.jsonPath("email").value(usuario.getEmail() ));
 	}
@@ -126,7 +126,7 @@ public class UsuarioResourceTest {
 		UsuarioInput dto = criaUsuarioInput();
 		
 		Usuario usuario = new Usuario();
-		usuario.setId(1L);
+		usuario.setUserId(1L);
 		usuario.setNome(nome);
 		usuario.setEmail(email);
 		usuario.setSenha(senha);

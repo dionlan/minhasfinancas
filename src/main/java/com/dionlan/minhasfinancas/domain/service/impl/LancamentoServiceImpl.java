@@ -43,7 +43,7 @@ public class LancamentoServiceImpl implements LancamentoService{
 	public Lancamento salvar(Lancamento lancamento) {
 		validarLancamento(lancamento);
 		
-		Long id = lancamento.getUsuario().getId();
+		Long id = lancamento.getUsuario().getUserId();
 		Usuario usuario = usuarioService.buscarOuFalhar(id);
 		
 		lancamento.setUsuario(usuario);
@@ -129,7 +129,7 @@ public class LancamentoServiceImpl implements LancamentoService{
 			throw new RegraNegocioException("Informe um ano válido.");
 		}
 		
-		if(lancamento.getUsuario() == null || lancamento.getUsuario().getId() == null) {
+		if(lancamento.getUsuario() == null || lancamento.getUsuario().getUserId() == null) {
 			throw new RegraNegocioException("Informe um usuário.");
 		}
 		
