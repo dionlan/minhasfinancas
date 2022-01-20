@@ -58,7 +58,7 @@ public class UsuarioResourceTest {
 		mvc
 			.perform(request)
 			.andExpect(MockMvcResultMatchers.status().isOk())
-			.andExpect(MockMvcResultMatchers.jsonPath("id").value(usuario.getUserId() ))
+			.andExpect(MockMvcResultMatchers.jsonPath("userId").value(usuario.getUserId() ))
 			.andExpect(MockMvcResultMatchers.jsonPath("nome").value(usuario.getNome() ))
 			.andExpect(MockMvcResultMatchers.jsonPath("email").value(usuario.getEmail() ));
 	}
@@ -111,7 +111,7 @@ public class UsuarioResourceTest {
 		mvc
 			.perform(request)
 			.andExpect(MockMvcResultMatchers.status().isCreated())
-			.andExpect(MockMvcResultMatchers.jsonPath("id").value(usuario.getUserId() ))
+			.andExpect(MockMvcResultMatchers.jsonPath("userId").value(usuario.getUserId() ))
 			.andExpect(MockMvcResultMatchers.jsonPath("nome").value(usuario.getNome() ))
 			.andExpect(MockMvcResultMatchers.jsonPath("email").value(usuario.getEmail() ));
 	}

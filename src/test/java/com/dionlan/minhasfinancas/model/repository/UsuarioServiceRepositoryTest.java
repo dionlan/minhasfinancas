@@ -39,7 +39,7 @@ public class UsuarioServiceRepositoryTest {
 	public void deveVerificarAExistenciaDeUmEmail() {
 		//cenário
 		Usuario usuario = criarUsuario();
-		usuario.setEmail("dionlan@dionlan.com");
+		usuario.setEmail("asdf@asdf.com");
 		//entityManager.persist(usuario);
 		
 		//ação / execução

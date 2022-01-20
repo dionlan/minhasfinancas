@@ -7,12 +7,12 @@ import java.time.OffsetDateTime;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.dionlan.minhasfinancas.domain.entity.Usuario;
 import com.dionlan.minhasfinancas.domain.exception.ErroAutenticacao;
@@ -20,8 +20,14 @@ import com.dionlan.minhasfinancas.domain.exception.RegraNegocioException;
 import com.dionlan.minhasfinancas.domain.repository.UsuarioRepository;
 import com.dionlan.minhasfinancas.domain.service.impl.UsuarioServiceImpl;
 
-@ExtendWith(SpringExtension.class)
-@TestPropertySource("/application-test.properties")
+/*
+* A partir de out/nov de 2019 a versão 2.2 do Spring Boot implementa o JUnit 5 com as novas anotações
+* @author Dionlan
+* 
+* Susbstituir @RunWith(SpringRunner.class) para @ExtendWith(SpringExtension.class)
+* */
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UsuarioServiceTest {
 
 	@SpyBean
@@ -30,16 +36,19 @@ public class UsuarioServiceTest {
 	@MockBean
 	private UsuarioRepository usuarioRepository;
 	
+	@Autowired
+	private PasswordEncoder encoder;
+	
 	@Test
 	public void deveSalvarUmUsuario(){
 		//cenário
-		
+		String senhaInformadaPeloUsuario = "senha";
 		Mockito.doNothing().when(usuarioService).validarEmail(Mockito.anyString());
 		Usuario usuario = new Usuario();
 		usuario.setUserId(1L);
 		usuario.setNome("nome");
 		usuario.setEmail("email@email.com");
-		usuario.setSenha("senha");
+		usuario.setSenha(senhaInformadaPeloUsuario);
 		
 		Mockito.when(usuarioRepository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
 		
@@ -50,8 +59,7 @@ public class UsuarioServiceTest {
 		assertThat(usuarioSalvo.getUserId()).isEqualTo(1L);
 		assertThat(usuarioSalvo.getNome()).isEqualTo("nome");
 		assertThat(usuarioSalvo.getEmail()).isEqualTo("email@email.com");
-		assertThat(usuarioSalvo.getSenha()).isEqualTo("senha");
-		
+		assertThat(encoder.matches(senhaInformadaPeloUsuario, usuarioSalvo.getSenha())).isTrue();
 	}
 	
 	/**
@@ -76,17 +84,18 @@ public class UsuarioServiceTest {
 	
 	@Test
 	public void deveAutenticarUmUsuarioComSucesso() {
-		String email = "emailAindaNaoCadastrado@emailAindaNaoCadastrado.com";
-		String senha = "senhaUsuarioTesteIngração";
+		String email = "asdf@asdf.com";
+		String senha = "asdf";
+		String senhaCriptografada = criptografarSenha(senha);
 		
 		Usuario usuario = new Usuario();
 		usuario.setEmail(email);
-		usuario.setSenha(senha);
+		usuario.setSenha(senhaCriptografada);
 		
 		Mockito.when(usuarioRepository.findByEmail(email)).thenReturn(usuario);
 		
 		//ação / execução
-		Usuario usuarioAutenticado = usuarioService.autenticar(email, senha);
+		Usuario usuarioAutenticado = usuarioService.autenticar("asdf@asdf.com", "asdf");
 		
 		//verificação
 		assertThat(usuarioAutenticado).isNotNull();
@@ -160,5 +169,9 @@ public class UsuarioServiceTest {
 		usuario.setSenha("senhaUsuarioTesteIngração");
 		usuario.setDataCadastro(OffsetDateTime.now());
 		usuarioService.salvarUsuario(usuario);
+	}
+	
+	private String criptografarSenha(String senha) {
+		return senha = encoder.encode(senha);
 	}
 }
