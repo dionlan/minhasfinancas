@@ -1,25 +1,26 @@
 package com.dionlan.minhasfinancas.domain.service.impl;
 
+import java.security.Key;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.Date;
-
-import javax.crypto.SecretKey;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Base64Utils;
-
 import com.dionlan.minhasfinancas.domain.entity.dto.UsuarioDTO;
 import com.dionlan.minhasfinancas.domain.service.JwtService;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.InvalidKeyException;
 
 @Service
 public class JwtServiceImpl implements JwtService{
@@ -28,53 +29,64 @@ public class JwtServiceImpl implements JwtService{
 	private String expiracao;
 	
 	@Value("${jwt.chave-assinatura}")
-	private String chaveAssinatura;
+	private static String chaveAssinatura;
 	
-	SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-	public static final String SECRET = Base64Utils.encodeToString("byBjYWbDqSDDqSBwcmV0bw==".getBytes());
-	
-	
+	String secret = "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4";
 
 	@Override
 	public String gerarToken(UsuarioDTO usuario) {
 		long expLong = Long.valueOf(expiracao);
-		LocalDateTime dataHoraExpiracao = LocalDateTime.now().plusMinutes(expLong);
-		Instant instant = dataHoraExpiracao.atZone(ZoneId.systemDefault()).toInstant();
-		Date data = Date.from(instant);
+		LocalDateTime now = LocalDateTime.now();
+		Instant instant = now.atZone(ZoneId.systemDefault()).toInstant();
+		Date dateHourNow = Date.from(instant);
 		
-		String horaExpiracaoToken = dataHoraExpiracao.toLocalTime()
-				.format(DateTimeFormatter.ofPattern(("HH:mm")));
-		//SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-		
-		String token = Jwts
-					.builder()
-					.setExpiration(data)
-					.setSubject(usuario.getEmail())
-					.claim("userId", usuario.getUserId())
-					.claim("nome", usuario.getNome())
-					.claim("horaExpiracao", horaExpiracaoToken)
-					.signWith(key)
-					.compact();
-		return token;
-	}
+		Date dateHourExpiration = Date.from(instant.plus(expLong, ChronoUnit.MINUTES));
 
+		Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret), SignatureAlgorithm.HS256.getJcaName());
+		
+		Map<String, Object> claim = new HashMap<>();
+        claim.put("alg", "HS256");
+        claim.put("typ", "JWT");
+	        
+		String token = null;
+		try {
+			token = Jwts
+						.builder()
+						.signWith(hmacKey)
+						.setClaims(claim)
+						.setSubject(usuario.getEmail())
+						.setId(UUID.randomUUID().toString())
+						.setIssuedAt(dateHourNow)
+						.setExpiration(dateHourExpiration)
+						.claim("userId", usuario.getUserId())
+						.claim("nome", usuario.getNome())
+						.compact();
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		}
+		return token;	
+	}
+	
 	@Override
-	public Claims obterClaims(String token) throws ExpiredJwtException {
-		//Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-		return Jwts
-				.parser()
-				.setSigningKey(key)
-				.parseClaimsJws(token)
-				.getBody();
+	public Jws<Claims> parseJwt(String jwtString) {
+	    Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret), 
+	                                    SignatureAlgorithm.HS256.getJcaName());
+
+	    Jws<Claims> jwt = Jwts.parserBuilder()
+	            .setSigningKey(hmacKey)
+	            .build()
+	            .parseClaimsJws(jwtString);
+
+	    return jwt;
 	}
 
 	@Override
 	public boolean isTokenValido(String token) {
 		try {
-			Claims claims = obterClaims(token);
-			Date dataExp = claims.getExpiration();
-			LocalDateTime dataExpiracao = dataExp.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 			
+			Jws<Claims> claims = parseJwt(token);
+			Date dataExp = claims.getBody().getExpiration();
+			LocalDateTime dataExpiracao = dataExp.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 			boolean dataHoraAtualIsAfterDataExpiracao = LocalDateTime.now().isAfter(dataExpiracao);
 			
 			return !dataHoraAtualIsAfterDataExpiracao;
@@ -86,7 +98,8 @@ public class JwtServiceImpl implements JwtService{
 
 	@Override
 	public String obterLoginUsuario(String token) {
-		Claims claims = obterClaims(token);
-		return claims.getSubject();
+		Jws<Claims> claims = parseJwt(token);
+		Claims bodyClaims = claims.getBody();
+		return bodyClaims.getSubject();
 	}
 }
